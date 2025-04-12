@@ -55,7 +55,7 @@
     },
     methods: {
       submitProfile() {
-        axios.post('http://127.0.0.1:8000/api/profile-setup-api/', this.form, { withCredentials: true })
+        axios.post('http://localhost:8000/api/profile-setup-api/', this.form, { withCredentials: true })
           .then(response => {
             if (response.data.status === 'ok') {
               this.$router.push({ name: 'homepage' })

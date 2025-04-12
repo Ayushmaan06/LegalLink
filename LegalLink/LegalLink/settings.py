@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
-    '127.0.0.1',
+    'localhost',
 ]
 
 
@@ -66,6 +66,18 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
 ]
 CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8080",
+]
+SESSION_COOKIE_DOMAIN = 'localhost'
+# For cross-site requests, set your cookie SameSite attribute to None
+SESSION_COOKIE_SAMESITE = None
+CSRF_COOKIE_SAMESITE = None
+
+# If not using HTTPS in development, ensure secure cookies are disabled
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 ROOT_URLCONF = 'LegalLink.urls'
 
 TEMPLATES = [
