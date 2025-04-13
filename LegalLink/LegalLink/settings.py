@@ -72,7 +72,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 SESSION_COOKIE_DOMAIN = 'localhost'
 # For cross-site requests, set your cookie SameSite attribute to None
-SESSION_COOKIE_SAMESITE = None
+SESSION_COOKIE_SAMESITE = "lax"
 CSRF_COOKIE_SAMESITE = None
 
 # If not using HTTPS in development, ensure secure cookies are disabled
