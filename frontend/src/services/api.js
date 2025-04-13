@@ -5,6 +5,17 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
+
+// Get current user profile
+export function getUserProfile() {
+  return apiClient.get('user-profile/');
+}
+
+// Update current user profile (only editable fields; backend ignores changes to karma, username, etc.)
+export function updateUserProfile(payload) {
+  return apiClient.post('user-profile/', payload);
+}
 
 export default apiClient;

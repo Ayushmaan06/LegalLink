@@ -16,6 +16,8 @@ class UserProfile(models.Model):
     state = models.CharField(max_length=100, blank=True)
     is_helper = models.BooleanField(default=False)
     contact_info = models.TextField(blank=True)
+    karma = models.IntegerField(default=0)  # Helping points for a good helper
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
 
     def __str__(self):
         return self.user.username
