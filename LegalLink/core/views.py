@@ -1,7 +1,8 @@
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Case
+from .models import Case, UserUpvote
+from django.contrib.auth.models import User
 
 @csrf_exempt
 def profile_setup_api(request):
@@ -154,5 +155,47 @@ def add_case_api(request):
         
         new_case.save()
         return JsonResponse({"status": "ok", "case_id": new_case.id})
+    
+    return JsonResponse({"status": "error", "message": "Invalid request method."}, status=405)
+
+@csrf_exempt
+def upvote_user_api(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"status": "error", "message": "Not authenticated"}, status=401)
+    
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON."}, status=400)
+        
+        target_id = data.get("target_id")
+        if not target_id:
+            return JsonResponse({"status": "error", "message": "No target specified."}, status=400)
+        
+        try:
+            target_user = User.objects.get(id=target_id)
+        except User.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Target user not found."}, status=404)
+        
+        # Prevent self-upvote if needed (optional)
+        if request.user.id == target_user.id:
+            # Allow self upvote if you wish; otherwise, uncomment below:
+            # return JsonResponse({"status": "error", "message": "Cannot upvote yourself."}, status=400)
+            pass
+        
+        # Check if this voter already upvoted the target
+        if UserUpvote.objects.filter(voter=request.user, voted=target_user).exists():
+            return JsonResponse({"status": "error", "message": "Already upvoted."}, status=400)
+        
+        # Create the upvote record
+        UserUpvote.objects.create(voter=request.user, voted=target_user)
+        
+        # Update the karma field on target user's profile.
+        target_profile = target_user.userprofile
+        target_profile.karma = (target_profile.karma or 0) + 1
+        target_profile.save()
+        
+        return JsonResponse({"status": "ok", "new_karma": target_profile.karma})
     
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=405)

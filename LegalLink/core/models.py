@@ -73,3 +73,13 @@ class Lawyer(models.Model):
 
     def __str__(self):
         return self.name
+    
+class UserUpvote(models.Model):
+    voter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="given_upvotes")
+    voted = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_upvotes")
+    
+    class Meta:
+        unique_together = (('voter', 'voted'),)
+        
+    def __str__(self):
+        return f"{self.voter.username} upvoted {self.voted.username}"

@@ -2,9 +2,14 @@
   <div class="home-page">
     <HeaderNav />
     <div class="main-content">
-      <!-- CasesTab replaces the old left section -->
+      <!-- Left column: CasesTab -->
       <div class="cases-section">
         <CasesTab />
+      </div>
+      <!-- Right column: CommunityHelper -->
+      <div class="community-section">
+        <!-- Pass activeCase prop as needed (e.g., based on a computed property or hardcoded for now) -->
+        <CommunityHelper :activeCase="hasActiveCase" />
       </div>
     </div>
   </div>
@@ -13,16 +18,20 @@
 <script>
 import HeaderNav from '@/components/HeaderNav.vue'
 import CasesTab from '@/components/CasesTab.vue'
+import CommunityHelper from '@/components/CommunityHelper.vue'
 
 export default {
   name: 'HomePage',
   components: {
     HeaderNav,
-    CasesTab
+    CasesTab,
+    CommunityHelper
   },
   data() {
     return {
-      // Removed userCity as it's no longer used by LawyersList
+      // For demonstration, set activeCase to true.
+      // You can change this based on your application logic.
+      hasActiveCase: true,
     }
   }
 }
@@ -36,16 +45,23 @@ export default {
   display: flex;
   flex-direction: column;
 }
-
 .main-content {
   flex: 1;
   display: flex;
-  justify-content: center; /* Center the cases section */
+  gap: 20px;   /* Add some gap between columns */
   padding: 20px;
+  justify-content: center;
 }
-
 .cases-section {
-  width: 100%;
+  flex: 2;
   max-width: 800px; /* Adjust the maximum width as needed */
+}
+.community-section {
+  flex: 1;
+  max-width: 300px; /* Adjust as needed */
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  color: #222;
 }
 </style>
