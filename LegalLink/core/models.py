@@ -32,8 +32,10 @@ class Case(models.Model):
     title = models.CharField(max_length=200)
     short_description = models.TextField()
     full_description = models.TextField()
+    charges = models.JSONField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="active")
     created_at = models.DateTimeField(auto_now_add=True)
+    lawyers = models.ManyToManyField('Lawyer', blank=True)  # New field for associated lawyers.
 
     def __str__(self):
         return self.title

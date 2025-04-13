@@ -1,53 +1,51 @@
 <template>
-    <div class="home-page">
-      <HeaderNav />
-  
-      <div class="main-content">
-        <!-- Left section: Lawyers list -->
-        <div class="left-section">
-          <LawyersList :city="userCity" />
-        </div>
+  <div class="home-page">
+    <HeaderNav />
+    <div class="main-content">
+      <!-- CasesTab replaces the old left section -->
+      <div class="cases-section">
+        <CasesTab />
       </div>
     </div>
-  </template>
-  
-  <script>
-  import HeaderNav from '@/components/HeaderNav.vue'
-  import LawyersList from '@/components/LawyersList.vue'
-  
-  export default {
-    name: 'HomePage',
-    components: {
-      HeaderNav,
-      LawyersList
-    },
-    data() {
-      return {
-        // default city is Nagpur; user can change this
-        userCity: 'Nagpur'
-      }
+  </div>
+</template>
+
+<script>
+import HeaderNav from '@/components/HeaderNav.vue'
+import CasesTab from '@/components/CasesTab.vue'
+
+export default {
+  name: 'HomePage',
+  components: {
+    HeaderNav,
+    CasesTab
+  },
+  data() {
+    return {
+      // Removed userCity as it's no longer used by LawyersList
     }
   }
-  </script>
-  
-  <style scoped>
-  .home-page {
-    background-color: #222; /* Dark mode background */
-    color: gold;            /* Dark mode text color */
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* Main content container */
-  .main-content {
-    flex: 1;
-    display: flex;
-  }
-  
-  /* Left section for lawyers */
-  .left-section {
-    width: 25%;
-    padding: 20px;
-  }
-  </style>
+}
+</script>
+
+<style scoped>
+.home-page {
+  background-color: #222; /* Dark mode background */
+  color: gold;            /* Dark mode text color */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center; /* Center the cases section */
+  padding: 20px;
+}
+
+.cases-section {
+  width: 100%;
+  max-width: 800px; /* Adjust the maximum width as needed */
+}
+</style>

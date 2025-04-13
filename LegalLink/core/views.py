@@ -1,6 +1,7 @@
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from .models import Case
 
 @csrf_exempt
 def profile_setup_api(request):
@@ -105,4 +106,53 @@ def update_avatar_api(request):
         profile.avatar = avatar_file
         profile.save()
         return JsonResponse({"status": "ok", "avatar": profile.avatar.url})
+    return JsonResponse({"status": "error", "message": "Invalid request method."}, status=405)
+
+@csrf_exempt
+def user_cases_api(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Not authenticated"}, status=401)
+    
+    if request.method == "GET":
+        active_objs = Case.objects.filter(user=request.user, status="active")
+        closed_objs = Case.objects.filter(user=request.user, status="closed")
+        # Serialize only the necessary fields: id, title, and charges (assumed to be a list of strings)
+        active_list = list(active_objs.values("id", "title", "charges"))
+        closed_list = list(closed_objs.values("id", "title", "charges"))
+        return JsonResponse({"active": active_list, "closed": closed_list})
+    
+    return JsonResponse({"error": "Invalid request method."}, status=405)
+
+
+@csrf_exempt
+def add_case_api(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"status": "error", "message": "Not authenticated"}, status=401)
+    
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON."}, status=400)
+        
+        title = data.get("title")
+        short_description = data.get("short_description")
+        full_description = data.get("full_description")
+        charges = data.get("charges", [])
+        
+        if not (title and short_description and full_description):
+            return JsonResponse({"status": "error", "message": "Missing required fields."}, status=400)
+        
+        new_case = Case.objects.create(
+            user=request.user,
+            title=title,
+            short_description=short_description,
+            full_description=full_description,
+            charges=charges,
+            status="active"
+        )
+        
+        new_case.save()
+        return JsonResponse({"status": "ok", "case_id": new_case.id})
+    
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=405)
