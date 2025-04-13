@@ -155,7 +155,11 @@ if image_data:
     user_input = st.chat_input("Ask a question about the image:")
 
     prompt = ChatPromptTemplate.from_messages([(
-            "system", "You are an expert image analyst trained to detect and explain the differences between real and AI-generated images. Your analysis must be thorough, highlighting patterns, textures, and anomalies unique to each category.This is the data regarding the image {context} , use it to answer the query."
+            "system", '''You are an expert image analyst trained to detect and explain the differences between authentic and AI-generated images.
+        Your task is to provide a thorough and detailed analysis of the image data provided as {context}. 
+        In your response, highlight patterns, textures, and anomalies unique to each category.
+        Additionally, if the image raises potential legal or ethical concerns (such as misuse or intellectual property issues), include clear guidance and any relevant legal recommendations.
+        Provide a detailed and concise answer that directly addresses the user's query using only the information from the image context.'''
         ), ("human", "{question}")])
 
     if user_input:
