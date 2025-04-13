@@ -12,12 +12,20 @@ class MyAccountAdapter(DefaultSocialAccountAdapter, DefaultAccountAdapter):
 
     def get_login_redirect_url(self, request):
         user = request.user
-        print("MyAccountAdapter.get_login_redirect_url called for", user.username)
-        try:
+        profile = None
+        # Attempt to get user's profile. Adjust this based on your UserProfile relation.
+        if hasattr(user, 'userprofile'):
             profile = user.userprofile
-        except UserProfile.DoesNotExist:
-            profile = None
-        if not user.first_name or not (profile and profile.city):
-            return 'http://localhost:8080/profile-setup'
+
+        # If either first_name is missing or profile or profile.city is missing, redirect to profile setup.
+        if not user.first_name or not (profile and getattr(profile, "city", None)):
+            return "http://localhost:8080/profile-setup"
         else:
-            return 'http://localhost:8080/home'
+            return "http://localhost:8080/home"
+
+    
+
+    def is_open_for_signup(self, request, sociallogin):
+        # Return True to allow new social signups.
+        # You can add custom logic here if needed.
+        return True
