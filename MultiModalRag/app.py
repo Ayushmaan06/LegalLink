@@ -1,30 +1,37 @@
 import streamlit as st
 
 # Set up Streamlit page
-st.set_page_config(page_title="Multi-Modal RAG", page_icon=":red_circle:",initial_sidebar_state="expanded", layout="wide",menu_items={
-        'Get Help': 'https://www.extremelycoolapp.com/help',
-        'Report a bug': "https://www.extremelycoolapp.com/bug",
-        'About': "# This is a header. This is an *extremely* cool app!"
-    })
+st.set_page_config(
+    page_title="LegalLink",
+    page_icon=":scales:",  # you may change the icon as desired
+    initial_sidebar_state="expanded",
+    layout="wide",
+    menu_items={
+        'Get Help': 'https://www.yourlegalink.com/help',
+        'Report a bug': "https://www.yourlegalink.com/bug",
+        'About': "# LegalLink\nYour AI‑Powered Legal Assistant offering insights and analysis for your legal documents."
+    }
+)
 
 # Title of the web app
-st.title("Multi-Modal Retrieval-Augmented Generation (RAG)")
+st.title("LegalLink - Your AI‑Powered Legal Assistant")
 
-# Explanation for Non-Technical Users
+# Explanation for Users
 st.write("""
-    **Multi-Modal RAG** stands for **Multi-Modal Retrieval-Augmented Generation**. It's a process that allows you to ask questions about different types of media, such as images, or documents, and get answers powered by artificial intelligence.
-    
-    In this app, you can interact with the following features:
+**LegalLink** is an AI‑powered assistant designed to help you navigate and understand legal documents and texts. Whether you're dealing with contracts, case files, or regulatory documents, LegalLink can help extract key legal points, summarise content, and answer your legal queries.
 
-    1. **Image Question Answering**: Upload an image, and the app will describe it. You can ask questions about the contents of the image.
-    2. **Document Question Answering**: Upload a document (PDF, Word, etc.), and the app will extract the relevant information to answer your questions.
-    
-    Here's how it works:
-    
-    
-    - **Image QA**: Upload an image, and the app will analyze the image, describing its contents. You can then ask questions about what’s in the image.
-    
-    - **Document QA**: Upload a document (like a PDF or Word file). The app extracts key information from the document to help answer your questions.
-    
-    Each feature uses a combination of AI models and sophisticated algorithms to give you the best possible answers.
+### Features:
+1. **Legal Document Analysis**:  
+   Upload your legal documents (PDFs, Word files, etc.), and LegalLink will extract and summarise the key legal information to help you gain insights quickly.
+
+2. **Legal Question Answering**:  
+   Ask questions about legal texts or documents, and receive context-aware answers generated through advanced AI retrieval-augmented techniques.
+
+### How It Works:
+- **Document Analysis**: Upload a document, and the assistant analyses it, highlighting key sections, obligations, and important clauses.
+- **Legal Q&A**: Once processed, you can ask detailed questions regarding the document or general legal inquiries. The assistant uses its analysis to provide accurate, helpful responses.
+
+**Disclaimer**: LegalLink is intended for informational purposes only and is not a substitute for professional legal advice. Always consult a qualified solicitor for formal legal guidance.
+
+Get started by uploading your document or posting your legal question below.
 """)
