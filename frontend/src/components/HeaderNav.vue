@@ -18,7 +18,7 @@
             alt="LLM Icon"
             class="icon"
           />
-          <span>LLM</span>
+          <span>AI Assistant</span>
         </div>
   
         <!-- eVault -->
@@ -42,14 +42,14 @@
         </div>
   
         <!-- Legal Document Summarizer -->
-        <div class="nav-item" @click="goToSummarizer">
+        <!-- <div class="nav-item" @click="goToSummarizer">
           <img
             src="@/assets/summarizer-icon.png"
             alt="Summarizer Icon"
             class="icon"
           />
           <span>Summarizer</span>
-        </div>
+        </div> -->
       </nav>
   
       <!-- User Profile -->
