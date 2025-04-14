@@ -7,11 +7,11 @@
         <!-- Left Sidebar -->
         <aside class="sidebar">
           <div class="avatar-container">
-            <img :src="avatarPreview" alt="User Avatar" class="avatar">
-            <!-- File input for updating avatar -->
-            <input type="file" @change="onFileChange" accept="image/*">
-            <button v-if="newAvatar" @click="uploadAvatar">Upload Avatar</button>
-          </div>
+          <!-- Use defaultAvatar if avatarPreview is empty -->
+          <img :src="avatarPreview || defaultAvatar" alt="User Avatar" class="avatar">
+          <input type="file" @change="onFileChange" accept="image/*">
+          <button v-if="newAvatar" @click="uploadAvatar">Upload Avatar</button>
+        </div>
   
           <div class="helper-toggle">
             <label>
@@ -91,7 +91,7 @@
     components: { HeaderNav },
     data() {
       return {
-        defaultAvatar: 'https://via.placeholder.com/200',
+        defaultAvatar: require('@/assets/user-icon.png') || 'https://via.placeholder.com/200',
         loading: true,
         error: '',
         // Store file when user selects a new avatar.
@@ -120,6 +120,7 @@
         try {
           const response = await getUserProfile();
           const data = response.data;
+          console.log("Fetched profile avatar:", data.avatar); // Debug: log returned avatar URL
           this.user = {
             username: data.username,
             first_name: data.first_name,
@@ -180,9 +181,12 @@
             if (response.data.status === 'ok') {
             alert("Avatar updated successfully!");
             // Update the avatarPreview with the URL returned from the backend
-            this.avatarPreview = response.data.avatar || this.avatarPreview;
-            this.user.avatar = response.data.avatar || this.user.avatar;
-            this.newAvatar = null;
+            const newUrl = response.data.avatar 
+        ? response.data.avatar + "?t=" + new Date().getTime() 
+        : this.avatarPreview;
+      this.avatarPreview = newUrl;
+      this.user.avatar = newUrl;
+      this.newAvatar = null;
             }
         } catch (err) {
             alert(err.message);
