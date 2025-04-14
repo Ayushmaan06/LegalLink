@@ -3,7 +3,7 @@ import documentVaultABI from './abi/DocumentVaultABI.json';
 import { create as ipfsCreate } from 'ipfs-http-client';
 import CryptoJS from 'crypto-js';
 import { Buffer } from 'buffer';
-const contractAddress = "0xd9145CCE52D386f254917e481eB44e9943F39138";
+const contractAddress = "0xd8b934580fcE35a11B58C6D73aDeE468a2833fa8";
 
 // Initialize IPFS client (using Infura's IPFS API endpoint as an example)
 const ipfs = ipfsCreate({ url: 'https://ipfs.infura.io:5001/api/v0' });

@@ -1,10 +1,15 @@
 <template>
     <div class="card">
       <div class="first-content">
-        <span>OCR & Search</span>
+        <span>Secure Retrieval</span>
       </div>
       <div class="second-content">
-        <span>Easy document search with Optical Character Recognition (OCR).</span>
+        <span>
+        Safely get the document from 
+        <a :href="`https://ipfs.infura.io/ipfs/{cid}`" target="_blank">
+          IPFS
+        </a>
+      </span>
       </div>
     </div>
   </template>
