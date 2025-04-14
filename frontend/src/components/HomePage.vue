@@ -2,14 +2,13 @@
   <div class="home-page">
     <HeaderNav />
     <div class="main-content">
-      <!-- Left column: CasesTab -->
       <div class="cases-section">
         <CasesTab />
       </div>
-      <!-- Right column: CommunityHelper -->
       <div class="community-section">
-        <!-- Pass activeCase prop as needed (e.g., based on a computed property or hardcoded for now) -->
-        <CommunityHelper :activeCase="hasActiveCase" />
+        <div class="card">
+          <CommunityHelper :activeCase="hasActiveCase" />
+        </div>
       </div>
     </div>
   </div>
@@ -29,8 +28,6 @@ export default {
   },
   data() {
     return {
-      // For demonstration, set activeCase to true.
-      // You can change this based on your application logic.
       hasActiveCase: true,
     }
   }
@@ -39,29 +36,61 @@ export default {
 
 <style scoped>
 .home-page {
-  background-color: #222; /* Dark mode background */
-  color: gold;            /* Dark mode text color */
+  background-color: var(--bg-black);
+  color: var(--highlight-yellow);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
+
 .main-content {
   flex: 1;
   display: flex;
-  gap: 20px;   /* Add some gap between columns */
+  gap: 20px;
   padding: 20px;
   justify-content: center;
+  flex-wrap: wrap;
 }
+
 .cases-section {
   flex: 2;
-  max-width: 800px; /* Adjust the maximum width as needed */
+  max-width: 800px;
+  width: 100%;
 }
+
 .community-section {
   flex: 1;
-  max-width: 300px; /* Adjust as needed */
-  background-color: #fff;
-  border-radius: 8px;
+  max-width: 300px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-left: 20px; /* Add space between sections */
+}
+
+
+/* Reuse your dark glassy card style */
+.card {
+  width: 100%;
   padding: 16px;
-  color: #222;
+  border-radius: 30px;
+  background: #212121;
+  box-shadow:
+    0 0 10px rgba(255, 204, 0, 0.2),
+    0 0 20px rgba(255, 204, 0, 0.15),
+    0 0 30px rgba(255, 204, 0, 0.1);
+}
+
+
+/* Optional: make sure CommunityHelper content fits well */
+.card :deep(.community-helpers) {
+  color: #fefefe;
+}
+
+/* Responsive fix */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 </style>
