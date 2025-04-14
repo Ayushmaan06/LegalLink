@@ -14,9 +14,10 @@
         <!-- Left: Fancy Upload -->
         <div class="fancy-upload-container">
           <FancyUpload
-            @document-uploaded="handleDocumentUploaded"
-            @update-status="handleStatusUpdate"
-          />
+          @file-selected="updateSelectedFile"
+          @document-uploaded="handleDocumentUploaded"
+          @update-status="handleStatusUpdate"
+        />
           <!-- Upload Document and Choose File Button -->
           <div class="upload-action-container">
             <div
@@ -113,6 +114,10 @@ export default {
     }
   },
   methods: {
+    updateSelectedFile(file) {
+      this.selectedFile = file;
+      console.log("Selected file updated:", file);
+    },
     handleDocumentUploaded(newDoc) {
       this.documents.push({
         ...newDoc,
