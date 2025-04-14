@@ -76,7 +76,7 @@ export default {
     }
 
     const openCaseDetail = (caseItem) => {
-      console.log('Open case detail for:', caseItem)
+      router.push({ name: 'case-modal', params: { caseId: caseItem.id } })
     }
 
     onMounted(fetchCases)

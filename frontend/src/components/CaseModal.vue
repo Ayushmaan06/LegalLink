@@ -61,6 +61,7 @@ export default {
   name: 'AddCasePage',
   data() {
     return {
+      isEdit: false,
       form: {
         against: '',
         chargesInput: '',
@@ -74,6 +75,13 @@ export default {
       verdictAdded: false
     }
   },
+  created() {
+    const caseId = this.$route.params.caseId;
+    if (caseId) {
+      this.isEdit = true;
+      this.fetchCaseDetails(caseId);
+    }
+  },
   methods: {
     addNextHearing() {
       this.todos.push({ label: 'Next Hearing', type: 'next_hearing', datetime: '' });
@@ -84,17 +92,42 @@ export default {
         this.verdictAdded = true;
       }
     },
+    async fetchCaseDetails(caseId) {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/case/${caseId}/`, { withCredentials: true });
+      console.log("Fetched case data:", response.data); // Log data for debugging
+      const data = response.data;
+      // Ensure that the keys here match what your API returns.
+      this.form.against = data.against;
+      this.form.chargesInput = (data.charges || []).join(", ");
+      this.form.quickDescription = data.short_description;
+      this.form.longDescription = data.full_description;
+      this.form.lawyersInput = (data.lawyers || []).join(", ");
+      this.todos = (data.events || []).map((event) => ({
+        label: event.type === 'first_hearing' ? 'First Hearing' :
+              event.type === 'next_hearing' ? 'Next Hearing' : 'Verdict',
+        type: event.type,
+        datetime: event.scheduled_datetime,
+      }));
+      // Mark verdict as added if applicable
+      if (this.todos.some(ev => ev.type === 'verdict')) {
+        this.verdictAdded = true;
+      }
+    } catch (error) {
+      console.error('Error fetching case details:', error);
+    }
+  },
     async submitCase() {
       const userName = "User";
       const title = `${userName} vs ${this.form.against}`;
-
+  
       const chargesArray = this.form.chargesInput.split(',').map(s => s.trim()).filter(Boolean);
       const lawyersArray = this.form.lawyersInput.split(',').map(s => s.trim()).filter(Boolean);
       const events = this.todos.map(ev => ({
         type: ev.type,
         scheduled_datetime: ev.datetime
       }));
-
+  
       const payload = {
         title,
         short_description: this.form.quickDescription,
@@ -103,18 +136,32 @@ export default {
         lawyers: lawyersArray,
         events
       };
-
+  
       try {
-        const response = await axios.post('http://localhost:8000/api/add-case/', payload, { withCredentials: true });
-        if (response.data.status === 'ok') {
-          alert('Case added successfully!');
-          this.resetForm();
+        if (this.isEdit) {
+          // Update existing case
+          const response = await axios.put(`http://localhost:8000/api/case/${this.$route.params.caseId}/`, payload, { withCredentials: true });
+          if (response.data.status === 'ok') {
+            alert('Case updated successfully!');
+            this.resetForm();
+            this.$router.push('/home');
+          } else {
+            alert('Error: ' + response.data.message);
+          }
         } else {
-          alert('Error: ' + response.data.message);
+          // Create new case
+          const response = await axios.post('http://localhost:8000/api/add-case/', payload, { withCredentials: true });
+          if (response.data.status === 'ok') {
+            alert('Case added successfully!');
+            this.resetForm();
+            this.$router.push('/home');
+          } else {
+            alert('Error: ' + response.data.message);
+          }
         }
       } catch (error) {
         console.error(error);
-        alert('An error occurred while adding the case.');
+        alert('An error occurred while processing the case.');
       }
     },
     resetForm() {
@@ -129,12 +176,12 @@ export default {
       this.verdictAdded = false;
     },
     closeModal() {
-      this.resetForm(); // Optional: reset when canceling
+      this.resetForm();
+      this.$router.push('/home');
     }
   }
 }
 </script>
-
 <style scoped>
 .add-case-page {
   height: 100vh;
