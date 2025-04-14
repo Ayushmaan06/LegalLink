@@ -66,7 +66,7 @@ def user_profile_update_api(request):
             "is_helper": profile.is_helper,
             "karma": profile.karma,  # Karma is returned, but not editable
             "contact_info": profile.contact_info,
-            "avatar": profile.avatar.url if profile.avatar else None,
+            "avatar": profile.avatar and request.build_absolute_uri(profile.avatar.url) or None,
         }
         return JsonResponse(data)
 
@@ -98,16 +98,19 @@ def user_profile_update_api(request):
 @csrf_exempt
 def update_avatar_api(request):
     if not request.user.is_authenticated:
-        return JsonResponse({"status": "error", "message": "Not authenticated"}, status=401)
+        return JsonResponse({"error": "Not logged in"}, status=401)
+
     if request.method == "POST":
-        if 'avatar' not in request.FILES:
-            return JsonResponse({"status": "error", "message": "No avatar file provided."}, status=400)
-        avatar_file = request.FILES['avatar']
         profile = request.user.userprofile
-        profile.avatar = avatar_file
-        profile.save()
-        return JsonResponse({"status": "ok", "avatar": profile.avatar.url})
-    return JsonResponse({"status": "error", "message": "Invalid request method."}, status=405)
+        if "avatar" in request.FILES:
+            profile.avatar = request.FILES["avatar"]
+            profile.save()
+            # Build an absolute URL so that the avatar loads from Django server port.
+            avatar_url = request.build_absolute_uri(profile.avatar.url)
+            return JsonResponse({"status": "ok", "avatar": avatar_url})
+        return JsonResponse({"error": "No avatar provided"}, status=400)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
 
 @csrf_exempt
 def user_cases_api(request):
