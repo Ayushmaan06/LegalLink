@@ -1,9 +1,10 @@
 <template>
+  <div class="add-case-page">
     <div class="modal-overlay">
       <div class="modal">
         <header>
           <h3>Add New Case</h3>
-          <button class="close-btn" @click="$emit('close')">X</button>
+          <button class="close-btn" @click="closeModal">X</button>
         </header>
         <form @submit.prevent="submitCase">
           <div class="form-group">
@@ -26,6 +27,7 @@
             <label>Lawyers Associated (comma separated):</label>
             <input type="text" v-model="form.lawyersInput" placeholder="e.g. John Doe, Jane Smith" />
           </div>
+
           <div class="todo-section">
             <h4>Schedule Case Events</h4>
             <div
@@ -41,156 +43,252 @@
               <button type="button" @click="addVerdict" v-if="!verdictAdded">Add Verdict</button>
             </div>
           </div>
+
           <div class="form-actions">
             <button type="submit">Submit Case</button>
-            <button type="button" @click="$emit('close')">Cancel</button>
+            <button type="button" @click="closeModal">Cancel</button>
           </div>
         </form>
       </div>
     </div>
-  </template>
-  
-  <script>
-  import axios from 'axios'
-  export default {
-    name: 'CaseModal',
-    data() {
-      return {
-        form: {
-          against: '',
-          chargesInput: '',
-          quickDescription: '',
-          longDescription: '',
-          lawyersInput: ''
-        },
-        // The to-do list holds scheduled events.
-        todos: [
-          { label: 'First Hearing', type: 'first_hearing', datetime: '' }
-        ],
-        verdictAdded: false
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  name: 'AddCasePage',
+  data() {
+    return {
+      form: {
+        against: '',
+        chargesInput: '',
+        quickDescription: '',
+        longDescription: '',
+        lawyersInput: ''
+      },
+      todos: [
+        { label: 'First Hearing', type: 'first_hearing', datetime: '' }
+      ],
+      verdictAdded: false
+    }
+  },
+  methods: {
+    addNextHearing() {
+      this.todos.push({ label: 'Next Hearing', type: 'next_hearing', datetime: '' });
+    },
+    addVerdict() {
+      if (!this.verdictAdded) {
+        this.todos.push({ label: 'Verdict', type: 'verdict', datetime: '' });
+        this.verdictAdded = true;
       }
     },
-    methods: {
-      addNextHearing() {
-        // Add a new "Next Hearing" event.
-        this.todos.push({ label: 'Next Hearing', type: 'next_hearing', datetime: '' })
-      },
-      addVerdict() {
-        if (this.verdictAdded) return
-        this.todos.push({ label: 'Verdict', type: 'verdict', datetime: '' })
-        this.verdictAdded = true
-      },
-      async submitCase() {
-        // Compute the case title: "User.name vs [Against]"
-        // Replace `User` with actual user info from your state/context if needed.
-        const userName = "User"
-        const title = `${userName} vs ${this.form.against}`
-        
-        const chargesArray = this.form.chargesInput
-          ? this.form.chargesInput.split(',').map(s => s.trim()).filter(Boolean)
-          : []
-        const lawyersArray = this.form.lawyersInput
-          ? this.form.lawyersInput.split(',').map(s => s.trim()).filter(Boolean)
-          : []
-        
-        const events = this.todos.map(ev => ({
-          type: ev.type,
-          scheduled_datetime: ev.datetime
-        }))
-        
-        const payload = {
-          title: title,
-          short_description: this.form.quickDescription,
-          full_description: this.form.longDescription,
-          charges: chargesArray,
-          lawyers: lawyersArray,
-          events: events
+    async submitCase() {
+      const userName = "User";
+      const title = `${userName} vs ${this.form.against}`;
+
+      const chargesArray = this.form.chargesInput.split(',').map(s => s.trim()).filter(Boolean);
+      const lawyersArray = this.form.lawyersInput.split(',').map(s => s.trim()).filter(Boolean);
+      const events = this.todos.map(ev => ({
+        type: ev.type,
+        scheduled_datetime: ev.datetime
+      }));
+
+      const payload = {
+        title,
+        short_description: this.form.quickDescription,
+        full_description: this.form.longDescription,
+        charges: chargesArray,
+        lawyers: lawyersArray,
+        events
+      };
+
+      try {
+        const response = await axios.post('http://localhost:8000/api/add-case/', payload, { withCredentials: true });
+        if (response.data.status === 'ok') {
+          alert('Case added successfully!');
+          this.resetForm();
+        } else {
+          alert('Error: ' + response.data.message);
         }
-        
-        try {
-          const response = await axios.post('http://localhost:8000/api/add-case/', payload, { withCredentials: true })
-          if (response.data.status === 'ok') {
-            alert('Case added successfully!')
-            this.$emit('case-added')
-            this.$emit('close')
-          } else {
-            alert('Error adding case: ' + response.data.message)
-          }
-        } catch (error) {
-          console.error('Error submitting case:', error)
-          alert('An error occurred while adding the case.')
-        }
+      } catch (error) {
+        console.error(error);
+        alert('An error occurred while adding the case.');
       }
+    },
+    resetForm() {
+      this.form = {
+        against: '',
+        chargesInput: '',
+        quickDescription: '',
+        longDescription: '',
+        lawyersInput: ''
+      };
+      this.todos = [{ label: 'First Hearing', type: 'first_hearing', datetime: '' }];
+      this.verdictAdded = false;
+    },
+    closeModal() {
+      this.resetForm(); // Optional: reset when canceling
     }
   }
-  </script>
-  
-  <style scoped>
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .modal {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 500px;
-    max-width: 90%;
-  }
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .close-btn {
-    background: none;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-  }
-  .form-group {
-    margin-bottom: 15px;
-  }
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  .form-group input,
-  .form-group textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  .todo-section {
-    margin-top: 20px;
-  }
-  .todo-item {
-    margin-bottom: 10px;
-  }
-  .todo-buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-  }
-  .form-actions button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  </style>
+}
+</script>
+
+<style scoped>
+.add-case-page {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  text-align: left;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #999;
+}
+
+.form-group {
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #444;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.todo-section {
+  margin-top: 18px;
+  text-align: left;
+}
+
+.todo-section h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.todo-item {
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.todo-item label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #555;
+}
+
+.todo-item input[type="datetime-local"] {
+  width: 250px;
+  max-width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.todo-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
+.todo-buttons button {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 7px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.form-actions button {
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.form-actions button[type="submit"] {
+  background-color: #ffcc00;
+  color: #222;
+}
+
+.form-actions button[type="button"] {
+  background-color: #eee;
+  color: #333;
+}
+</style>
