@@ -30,7 +30,8 @@ export default {
   methods: {
     onFileChange(e) {
       this.selectedFile = e.target.files[0];
-    }
+      this.$emit('file-selected', this.selectedFile);
+    },
   }
 };
 </script>
