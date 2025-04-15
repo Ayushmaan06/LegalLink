@@ -164,7 +164,13 @@ But that’s where **we** step in.
      npm run serve
      ```
 
+## Acknowledgements
 
+- [Django](https://www.djangoproject.com/)
+- [Vue.js](https://vuejs.org/)
+- [IPFS](https://ipfs.io/)
+- The Ethereum community and developers behind [ethers.js](https://docs.ethers.io/)
+- All contributors and open-source libraries that have made this project possible.
 
 
 
