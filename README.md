@@ -53,7 +53,7 @@ But that’s where **we** step in.
 ## 🧠 The Multimodal RAG Assistant – Master of All Trades
 
 ### 🕵️‍♂️ Detective. Advisor. Counselor.
-- Combines **LLMs (LLaMA, Grok, DeepSeek 21, Gemini 2.0 Flash)** for text, image, and PDF understanding
+- Combines **LLMs (LLaMA, Grok, DeepSeek r1, Gemini 2.0 Flash)** for text, image, and PDF understanding
 - **Reads contracts, scans documents, decodes medical reports**, and **detects fraud**
 - Built with **LangChain** + **sklearn** for reasoning, retrieval, and contextual intelligence
 
@@ -98,7 +98,7 @@ But that’s where **we** step in.
 
 | Layer           | Tech Used                                           |
 |----------------|------------------------------------------------------|
-| 🧠 AI Assistant | LangChain, sklearn, Grok, LLaMA, DeepSeek 21, Gemini |
+| 🧠 AI Assistant | LangChain, sklearn, Grok, LLaMA, DeepSeek r1, Gemini |
 | 🧑 Backend      | Django (REST APIs)                                   |
 | 🔗 Storage      | Blockchain + IPFS                                    |
 | 🧑‍🎨 Frontend    | Vue.js                                               |
