@@ -1,3 +1,6 @@
+# Environment variables
+.env
+
 # Python
 __pycache__/
 *.py[cod]
@@ -26,26 +29,28 @@ var/
 *.pyc
 local_settings.py
 db.sqlite3
-db.sqlite3-journal
-media
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Docker
-.dockerignore
+media/
 
 # Node
 node_modules/
 npm-debug.log
 yarn-debug.log
 yarn-error.log
+.pnpm-debug.log
 
 # VS Code
 .vscode/
+.history/
 
-# Misc
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Docker
+docker-compose.override.yml
