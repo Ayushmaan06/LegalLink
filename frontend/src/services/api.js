@@ -1,7 +1,12 @@
 import axios from 'axios';
 
+// Determine API URL based on environment
+const apiURL = process.env.NODE_ENV === 'production' 
+  ? 'http://backend:8000/api/'  // Docker service name in production
+  : 'http://localhost:8000/api/'; // Local development
+
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8000/api/',
+  baseURL: apiURL,
   headers: {
     'Content-Type': 'application/json',
   },

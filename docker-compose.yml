@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: ./LegalLink
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./LegalLink:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-$l6cj_2x4(ryyzzj7##n=zyc8xuu0j3=&%cjq4x+7^41h#6e2k
+      - ALLOWED_HOSTS=localhost,backend
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+      
+  multimodalrag:
+    build:
+      context: ./MultiModalRag
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./MultiModalRag:/app
+    depends_on:
+      - backend
+
+volumes:
+  static_volume:
+  media_volume:

@@ -123,7 +123,7 @@ export default {
         ...newDoc,
         id: this.documents.length,
         timestamp: new Date().toLocaleString(),
-        uploader: "0xd8b934580fcE35a11B58C6D73aDeE468a2833fa8"
+        uploader: "0xD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771B"
       })
     },
     handleStatusUpdate(newMessage, txHash = '') {
