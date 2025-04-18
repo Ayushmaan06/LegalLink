@@ -1,0 +1,1 @@
+## Check the Basic Notebook for recommendation system [here](https://colab.research.google.com/drive/1HwXqgCqB81L6GWFef0r6Rjd_9t2mRPmq?usp=sharing)
